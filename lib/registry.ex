@@ -32,13 +32,22 @@ defmodule KV.Registry do
     refs = %{}
     {:ok, {names, refs}}
   end
+  defp combineTaskOutput(task, acc) do
+    seqList =Task.await(task)
+    acc = if(seqList != []) do
+      [ seqList | acc]
+    else
+      acc
+    end
+  end
 
   def handle_call({:lookup, name}, _from, state) do
     start = System.monotonic_time(:microsecond)
-    out = perfectSquare(10000,289,1,[])
+    taskList = splitTask(10000,289,1,[])
+    out = Enum.reduce(taskList, [], fn task,acc ->  combineTaskOutput(task, acc) end)
     time_spent = System.monotonic_time(:microsecond) - start
     IO.puts(time_spent)
-    {:reply, Enum.count(out), state}
+    {:reply, out, state}
   end
 
   # def handle_cast({:create, name}, {names, refs}) do
@@ -63,25 +72,16 @@ defmodule KV.Registry do
     {:noreply, state}
   end
 
-  def perfectSquare(n, _, start, out ) when start >n do
+  def splitTask(n, _, start, out ) when start >n do
     out
   end
 
-  def perfectSquare(n, k, start, out) do
+  def splitTask(n, k, start, out) do
     last = start + k-1
     window = Enum.to_list start..last
-    # IO.puts window
     task = Task.Supervisor.async(KV.TaskSupervisor, fn -> checkPerfrectSq?(window) end)
-    seqList =Task.await(task)
-
-    # seqList = checkPerfrectSq?(window)
-    out = if(seqList != []) do
-      [ seqList | out]
-    else
-      out
-    end
-
-    perfectSquare(n, k, (start + 1), out)
+    out = [task | out]
+    splitTask(n, k, (start + 1), out)
   end
 
   defp checkPerfrectSq?(list) do

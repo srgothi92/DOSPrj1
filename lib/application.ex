@@ -9,6 +9,7 @@ defmodule KV.Application do
   def init(:ok) do
     children = [
       {KV.Registry, name: KV.Registry},
+      # Will need to resert the task in case of failures
       supervisor(Task.Supervisor, [[name: KV.TaskSupervisor, restart: :transient]]),
     ]
 
