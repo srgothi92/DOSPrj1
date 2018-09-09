@@ -15,8 +15,8 @@ defmodule KV.Registry do
 
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
-  def lookup(server, name) do
-    GenServer.call(server, {:lookup, name}, 150000)
+  def execute(server, inputList) do
+    GenServer.call(server, {:compute, inputList}, 150000)
   end
 
   @doc """
@@ -32,6 +32,7 @@ defmodule KV.Registry do
     refs = %{}
     {:ok, {names, refs}}
   end
+
   defp combineTaskOutput(task, acc) do
     seqList =Task.await(task)
     acc = if(seqList != []) do
@@ -41,9 +42,11 @@ defmodule KV.Registry do
     end
   end
 
-  def handle_call({:lookup, name}, _from, state) do
+  def handle_call({:compute, inputList}, _from, state) do
+    # n = inputList[0]
+    # k = inputList[1]
     start = System.monotonic_time(:microsecond)
-    taskList = splitTask(10000,289,1,[])
+    taskList = splitTask(40,24,1,[])
     out = Enum.reduce(taskList, [], fn task,acc ->  combineTaskOutput(task, acc) end)
     time_spent = System.monotonic_time(:microsecond) - start
     IO.puts(time_spent)
