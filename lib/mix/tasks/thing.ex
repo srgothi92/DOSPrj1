@@ -1,6 +1,12 @@
 defmodule Mix.Tasks.Thing do
+@moduledoc """
+Custom task to find a perfect square that is the sum of squares of consecutive integers. 
+"""
+
   use Mix.Task
   use Supervisor
+  import OptionParser
+  
 
   @shortdoc "Give a short salutation"
 
@@ -15,6 +21,9 @@ defmodule Mix.Tasks.Thing do
   end
 
   def run(args) do
+  b = OptionParser.parse(args,[])
+
+  IO.inspect elem(b,1) |> is_list
     children = [
       {KV.Registry, name: KV.Registry},
       # Will need to resert the task in case of failures
@@ -23,7 +32,7 @@ defmodule Mix.Tasks.Thing do
 
     Supervisor.init(children, strategy: :one_for_one)
     Supervisor.start_link(__MODULE__, :ok, [])
-    a = KV.Registry.execute(KV.Registry, "shopping")
+    a = KV.Registry.execute(KV.Registry,elem(b,1))
     IO.inspect(a)
   end
 end

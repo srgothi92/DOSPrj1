@@ -15,8 +15,8 @@ defmodule KV.Registry do
 
   Returns `{:ok, pid}` if the bucket exists, `:error` otherwise.
   """
-  def execute(server, inputList) do
-    GenServer.call(server, {:compute, inputList}, 150000)
+  def execute(server, args) do
+    GenServer.call(server, {:compute, args}, 150000)
   end
 
   @doc """
@@ -42,11 +42,12 @@ defmodule KV.Registry do
     end
   end
 
-  def handle_call({:compute, inputList}, _from, state) do
-    # n = inputList[0]
-    # k = inputList[1]
+  def handle_call({:compute, args}, _from, state) do
+    n = List.first(args) |> String.to_integer
+    k = List.last(args) |> String.to_integer
+    IO.inspect n
     start = System.monotonic_time(:microsecond)
-    taskList = splitTask(40,24,1,[])
+    taskList = splitTask(n,k,1,[])
     out = Enum.reduce(taskList, [], fn task,acc ->  combineTaskOutput(task, acc) end)
     time_spent = System.monotonic_time(:microsecond) - start
     IO.puts(time_spent)
