@@ -1,4 +1,4 @@
-defmodule KV.Application do
+defmodule DOSPRJ.Application do
   use Supervisor
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
@@ -8,11 +8,10 @@ defmodule KV.Application do
 
   def init(:ok) do
     children = [
-      {KV.Registry, name: KV.Registry},
+      {DOSPRJ.TaskManager, name: DOSPRJ.TaskManager},
       # Will need to resert the task in case of failures
-      supervisor(Task.Supervisor, [[name: KV.TaskSupervisor, restart: :transient]]),
+      supervisor(Task.Supervisor, [[name: DOSPRJ.TaskSupervisor, restart: :transient]]),
     ]
-
     Supervisor.init(children, strategy: :one_for_one)
   end
 
