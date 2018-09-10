@@ -14,8 +14,30 @@ def deps do
   ]
 end
 ```
+## Run the program
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/kv](https://hexdocs.pm/kv).
+To run the code for this project, simply run in your terminal:
+
+```elixir
+$ mix PerfectSquare 3 4
+```
+
+
+## Tests
+
+To run the tests for this project, simply run in your terminal:
+
+```elixir
+$ mix test
+```
+## Documentation
+
+To generate the documentation, run the following command in your terminal:
+
+```elixir
+$ mix docs
+```
+This will generate a doc/ directory with a documentation in HTML. 
+To view the documentation, open the index.html file in the generated directory.
+
 
