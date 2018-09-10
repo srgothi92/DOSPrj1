@@ -42,8 +42,8 @@ Measuring times for different inputs on Single machine with 2 cores.
 
 ## Distributed Execution
 
-To run program on multiple machines:
-Start nodes, run on every machines:
+To run program on multiple machines, we need to start nodes of each machine.
+Start nodes:
 
 ```elixir
 iex --name <node name>@<IPV4 address> --cookie <Cookie String> -S mix
@@ -54,9 +54,9 @@ where `<node name>` can be any user defined name of node
 Edit ./config/config.exs to list down names of all node. Naming format `:"<node name>@<IPV4address>"`
 For example:
 
-```
+```elixir
  config :DOSPRJ, :routing_table, {:"one@192.168.0.5", :"two@192.168.0.9",...}
- ```
+```
 
 Select Any Node as the central node to distribute task and run below commands on that node.
 
@@ -64,6 +64,7 @@ To make connections to differnet nodes:
 
 ```elixir
 iex>Node.connect <node name>@<IPV4address> to make connection.
+true
 ```
 
 To check all connected nodes:
