@@ -50,8 +50,8 @@ defmodule DOSPRJ.TaskManager do
   Returns `{out, state}`
   """
   def handle_call({:compute, args}, _from, state) do
-    n = List.first(args) |> String.to_integer
-    k = List.last(args) |> String.to_integer
+    n = List.first(args)
+    k = List.last(args)
     route = routingTable()
     taskList = splitTask(n,k,1,[],route)
     out = Enum.reduce(taskList, [], fn task,acc ->  combineTaskOutput(task, acc) end)
