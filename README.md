@@ -37,7 +37,12 @@ $ mix test
 
 Measuring times for different inputs on Single machine with 2 cores.
 
-
+| n,k       | real   | user   | sys    | sys/real | (user+sys)/real |
+|-----------|--------|--------|--------|----------|-----------------|
+| 3,2       | 0.589s | 0.659s | 0.187s | 0.317s   | 1.436s          |
+| 100,28    | 0.828s | 0.730s | 0.271s | 0.327s   | 1.208s          |
+| 10000,28  | 5.015s | 6.859s | 0.597s | 0.119s   | 1.432s          |
+| 10000,289 | 6.812s | 9.256s | 0.898s | 0.131s   | 1.490s          |
 
 
 ## Distributed Execution
