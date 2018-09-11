@@ -83,7 +83,7 @@ To Run the program on central node:
 iex> "DOSPRJ.TaskManager.execute(DOSPRJ.TaskManager, ["<ns>", "<k>"])"
 ```
 
- ## Documentation
+## Documentation
 
 To generate the documentation, run the following command in your terminal:
 
