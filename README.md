@@ -5,6 +5,13 @@ It takes the input in the form of n,k where the perfect square sequence will be 
 The list of 1 to n integers is distributed in seperate windows of size k and the aggregate of the perfect squares 
 is computed in seperate process.It is then verified if the aggregate is a perfect square.**
 
+## Group Info
+
+UFID: 8115-5459 Shaileshbhai Revabhai Gothi
+
+
+UFID: 8916-9425 Sivani Sri Sruthi Korukonda
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
@@ -17,7 +24,7 @@ def deps do
   ]
 end
 ```
-## Run the program
+## Instructions
 
 To run the code for this project, simply run in your terminal:
 
