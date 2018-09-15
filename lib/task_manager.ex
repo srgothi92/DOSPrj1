@@ -1,5 +1,6 @@
 defmodule DOSPRJ.TaskManager do
   use GenServer
+  require Logger
   @moduledoc """
   Distributes the list of 1 to n in seperate windows of size k.
   Computes the aggregate of the perfect squares in seperate process.
@@ -37,7 +38,8 @@ defmodule DOSPRJ.TaskManager do
   Combines the output of the tasks
   """
   defp combineTaskOutput(task, acc) do
-    seqList =Task.await(task)
+    seqList =Task.await(task,80000)
+    Logger.info("in splitTask #{inspect(seqList)} : #inssect(self()))")
     if(seqList != []) do
       [ seqList | acc]
     else
@@ -52,29 +54,49 @@ defmodule DOSPRJ.TaskManager do
   def handle_call({:compute, args}, _from, state) do
     n = List.first(args)
     k = List.last(args)
+    taskN = findNoOfTaskToCreate
     route = routingTable()
-    taskList = splitTask(n,k,1,[],route)
+    taskList = []
+    taskList = 1..taskN |> Enum.map(fn(val) ->
+      taskSize = div(n,taskN)
+      taskEnd = taskSize * val;
+      taskStart = taskEnd - taskSize + 1;
+      Task.Supervisor.async({DOSPRJ.TaskSupervisor, getNode(route, val)}, fn -> splitTask(taskEnd, k, taskStart, []) end)
+     end
+    )
+    # tasklist = [task | tasklist]
+    # taskList = splitTask(n,k,1,[],route)
     out = Enum.reduce(taskList, [], fn task,acc ->  combineTaskOutput(task, acc) end)
     {:reply, out, state}
+  end
+
+  defp findNoOfTaskToCreate do
+    noOfCores = 2
+    noOfMachines = 1
+    scalingFactor = 2
+    scalingFactor * noOfCores * noOfMachines
   end
 
   @doc """
   End of recursion when start is greater than n
   Returns '[tasklist]' which is the list of tasks which can be awaited to get the output
   """
-  defp splitTask(n, _, start, tasklist, _ ) when start >n do
-    tasklist
+  defp splitTask(n, _, start, output ) when start >n do
+    output
   end
 
   @doc """
   Starting a seperate process for each window of k size from start,start+1,start+2...
   """
-  defp splitTask(n, k, start, tasklist, route) do
+  defp splitTask(n, k, start, output) do
     last = start + k-1
     window = Enum.to_list start..last
-    task = Task.Supervisor.async({DOSPRJ.TaskSupervisor, getNode(route, start)}, fn -> checkPerfrectSq?(window) end)
-    tasklist = [task | tasklist]
-    splitTask(n, k, (start + 1),tasklist, route)
+    output = if checkPerfrectSq?(window) do
+      [window | output]
+    else
+      output
+    end
+    splitTask(n, k, (start + 1),output)
   end
 
   @doc """
@@ -82,9 +104,9 @@ defmodule DOSPRJ.TaskManager do
   """
   defp checkPerfrectSq?(list) do
     if calculateSquare(list) |>  is_sqrt_natural? == true do
-      list
+      true
     else
-      []
+      false
     end
   end
 
