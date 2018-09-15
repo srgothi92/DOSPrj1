@@ -53,8 +53,11 @@ defmodule Mix.Tasks.PerfectSquare do
   end
 
   defp findPerfectSquare([n, k]) do
+    start = System.monotonic_time(:microsecond)
     output = DOSPRJ.TaskManager.execute(DOSPRJ.TaskManager, [n, k])
-    Logger.info("Perfect Square Sequence: #{inspect(output)}")
+    time_spent = System.monotonic_time(:microsecond) - start
+    Logger.info("Perfect Square:#{inspect(time_spent)}")
+    # Logger.info("Perfect Square Sequence: #{inspect(output)}")
   end
 
   defp findPerfectSquare([]) do

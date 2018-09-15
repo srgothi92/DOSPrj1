@@ -39,7 +39,6 @@ defmodule DOSPRJ.TaskManager do
   """
   defp combineTaskOutput(task, acc) do
     seqList =Task.await(task,80000)
-    Logger.info("in splitTask #{inspect(seqList)} : #inssect(self()))")
     if(seqList != []) do
       [ seqList | acc]
     else
@@ -54,7 +53,7 @@ defmodule DOSPRJ.TaskManager do
   def handle_call({:compute, args}, _from, state) do
     n = List.first(args)
     k = List.last(args)
-    taskN = findNoOfTaskToCreate
+    taskN = 1000000
     route = routingTable()
     taskList = []
     taskList = 1..taskN |> Enum.map(fn(val) ->
